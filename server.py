@@ -22,10 +22,17 @@ class RequestData(BaseModel):
     max_pages: int
 
 
+from selenium.webdriver.chrome.options import Options
+
 @app.post("/run")
 def run(data: RequestData):
 
-    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
+    chrome_options = Options()
+    chrome_options.add_argument("--headless=new")
+    chrome_options.add_argument("--no-sandbox")
+    chrome_options.add_argument("--disable-dev-shm-usage")
+
+    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=chrome_options)
 
     try:
         results = run_tracker(
