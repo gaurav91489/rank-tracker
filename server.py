@@ -40,6 +40,21 @@ def run(data: RequestData):
 
     driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=chrome_options)
 
+    # Use stealth exactly as Chrome would be on desktop to avoid bot detection
+    try:
+        from selenium_stealth import stealth
+        stealth(
+            driver,
+            languages=["en-US", "en"],
+            vendor="Google Inc.",
+            platform="Win32",
+            webgl_vendor="Intel Inc.",
+            renderer="Intel Iris OpenGL Engine",
+            fix_hairline=True,
+        )
+    except ImportError:
+        pass
+
     try:
         results = run_tracker(
             driver=driver,
