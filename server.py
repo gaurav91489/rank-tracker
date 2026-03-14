@@ -22,22 +22,19 @@ class RequestData(BaseModel):
     max_pages: int
 
 
-import undetected_chromedriver as uc
-import platform
+from selenium.webdriver.chrome.options import Options
 
 @app.post("/run")
 def run(data: RequestData):
 
-    options = uc.ChromeOptions()
-    
-    # Only run in headless mode if not on Windows (i.e., inside Docker / Railway)
-    is_linux = platform.system() == "Linux"
-    if is_linux:
-        options.add_argument("--no-sandbox")
-        options.add_argument("--disable-dev-shm-usage")
-        options.add_argument("--window-size=1920,1080")
+    options = Options()
+    # options.add_argument("--headless=new") # Removed to run in visible mode
 
-    driver = uc.Chrome(options=options, headless=is_linux)
+    print("--- NEW SEARCH STARTED ---")
+    print("Browser is opening in visible mode.")
+    print("If you see a CAPTCHA, please solve it manually in the Chrome window!")
+    
+    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
 
     try:
         results = run_tracker(

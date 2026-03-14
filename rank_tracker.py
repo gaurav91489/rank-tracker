@@ -162,6 +162,11 @@ def get_rank(
         links = resolve_links(driver, config["selectors"])
 
         if links is None:
+            print(f"\n[!] WARNING: {engine_name} returned no results. You might be blocked by a CAPTCHA.")
+            input(">>> Please solve the CAPTCHA in the browser window, then press ENTER in this terminal to try again... <<<")
+            links = resolve_links(driver, config["selectors"])
+
+        if links is None:
             print(f"[{engine_name}] No selectors matched on page {page} for '{phrase}' — saving debug HTML.")
             with open(config["debug_file"], "w", encoding="utf-8") as fh:
                 fh.write(driver.page_source)

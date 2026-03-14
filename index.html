@@ -1,0 +1,1028 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SEO Rank Tracker</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Sora:wght@300;400;500;600&display=swap"
+        rel="stylesheet" />
+    <style>
+        :root {
+            --bg: #0d0d0f;
+            --s1: #141417;
+            --s2: #1c1c20;
+            --s3: #242428;
+            --border: #2e2e34;
+            --border2: #3a3a42;
+            --txt: #e8e8ec;
+            --txt2: #8a8a96;
+            --txt3: #55555f;
+            --accent: #00e5a0;
+            --acc-dim: rgba(0, 229, 160, .12);
+            --acc-glow: rgba(0, 229, 160, .25);
+            --danger: #ff5370;
+            --warn: #ffb300;
+            --info: #448aff;
+            --mono: 'Space Mono', monospace;
+            --sans: 'Sora', sans-serif
+        }
+
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0
+        }
+
+        html {
+            scroll-behavior: smooth
+        }
+
+        body {
+            font-family: var(--sans);
+            background: var(--bg);
+            color: var(--txt);
+            min-height: 100vh;
+            line-height: 1.6
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0, 0, 0, .07) 2px, rgba(0, 0, 0, .07) 4px);
+            pointer-events: none;
+            z-index: 999
+        }
+
+        header {
+            border-bottom: 1px solid var(--border);
+            padding: 0 40px;
+            height: 56px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            background: rgba(13, 13, 15, .92);
+            backdrop-filter: blur(12px);
+            z-index: 50
+        }
+
+        .logo {
+            font-family: var(--mono);
+            font-size: 13px;
+            letter-spacing: .1em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--txt)
+        }
+
+        .logo-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--accent);
+            border-radius: 50%;
+            box-shadow: 0 0 8px var(--acc-glow);
+            animation: pulse 2s ease-in-out infinite
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                box-shadow: 0 0 6px var(--acc-glow)
+            }
+
+            50% {
+                box-shadow: 0 0 14px var(--acc-glow), 0 0 24px var(--acc-dim)
+            }
+        }
+
+        .header-tag {
+            font-family: var(--mono);
+            font-size: 10px;
+            color: var(--txt3);
+            letter-spacing: .12em;
+            border: 1px solid var(--border2);
+            padding: 4px 10px;
+            border-radius: 4px
+        }
+
+        .layout {
+            display: grid;
+            grid-template-columns: 360px 1fr;
+            min-height: calc(100vh - 56px)
+        }
+
+        .panel {
+            border-right: 1px solid var(--border);
+            padding: 32px 28px;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+            background: var(--s1)
+        }
+
+        .panel-head {
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border)
+        }
+
+        .panel-title {
+            font-size: 22px;
+            font-weight: 600;
+            letter-spacing: -.02em;
+            color: var(--txt);
+            margin-bottom: 4px
+        }
+
+        .panel-sub {
+            font-size: 12px;
+            color: var(--txt3);
+            font-family: var(--mono);
+            letter-spacing: .06em
+        }
+
+        .field {
+            display: flex;
+            flex-direction: column;
+            gap: 7px
+        }
+
+        .label {
+            font-family: var(--mono);
+            font-size: 10px;
+            letter-spacing: .14em;
+            text-transform: uppercase;
+            color: var(--txt2);
+            display: flex;
+            align-items: center;
+            gap: 6px
+        }
+
+        .label::before {
+            content: '';
+            display: inline-block;
+            width: 3px;
+            height: 3px;
+            background: var(--accent);
+            border-radius: 50%
+        }
+
+        input[type=text],
+        input[type=number],
+        textarea {
+            background: var(--s2);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: var(--txt);
+            font-family: var(--mono);
+            font-size: 12px;
+            padding: 11px 14px;
+            outline: none;
+            width: 100%;
+            transition: border-color .18s, background .18s;
+            resize: vertical
+        }
+
+        input[type=text]:focus,
+        input[type=number]:focus,
+        textarea:focus {
+            border-color: var(--accent);
+            background: var(--s3)
+        }
+
+        input::placeholder,
+        textarea::placeholder {
+            color: var(--txt3)
+        }
+
+        input[type=number] {
+            max-width: 80px
+        }
+
+        .engines {
+            display: flex;
+            flex-direction: column;
+            gap: 6px
+        }
+
+        .eng {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 14px;
+            background: var(--s2);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            cursor: pointer;
+            user-select: none;
+            transition: border-color .18s;
+            position: relative;
+            overflow: hidden
+        }
+
+        .eng::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 0;
+            background: var(--acc-dim);
+            transition: width .25s ease
+        }
+
+        .eng.on {
+            border-color: var(--accent)
+        }
+
+        .eng.on::after {
+            width: 100%
+        }
+
+        .eng-indicator {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            border: 1.5px solid var(--border2);
+            flex-shrink: 0;
+            position: relative;
+            z-index: 1;
+            transition: border-color .18s
+        }
+
+        .eng.on .eng-indicator {
+            border-color: var(--accent);
+            box-shadow: 0 0 6px var(--acc-glow)
+        }
+
+        .eng-check {
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            background: var(--accent);
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            transition: transform .15s
+        }
+
+        .eng.on .eng-check {
+            transform: translate(-50%, -50%) scale(1)
+        }
+
+        .eng-name {
+            font-family: var(--mono);
+            font-size: 12px;
+            letter-spacing: .05em;
+            color: var(--txt);
+            position: relative;
+            z-index: 1
+        }
+
+        .eng-badge {
+            margin-left: auto;
+            font-size: 10px;
+            font-family: var(--mono);
+            color: var(--txt3);
+            position: relative;
+            z-index: 1
+        }
+
+        .btn-run {
+            width: 100%;
+            padding: 13px;
+            background: var(--accent);
+            color: #000;
+            border: none;
+            border-radius: 6px;
+            font-family: var(--mono);
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: .08em;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: opacity .15s, transform .1s, box-shadow .2s
+        }
+
+        .btn-run:hover {
+            opacity: .9;
+            box-shadow: 0 4px 20px var(--acc-glow)
+        }
+
+        .btn-run:active {
+            transform: scale(.98)
+        }
+
+        .btn-run:disabled {
+            opacity: .35;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none
+        }
+
+        .spinner {
+            width: 14px;
+            height: 14px;
+            border: 2px solid rgba(0, 0, 0, .25);
+            border-top-color: #000;
+            border-radius: 50%;
+            animation: spin .6s linear infinite;
+            display: none
+        }
+
+        .btn-run.loading .spinner {
+            display: block
+        }
+
+        .btn-run.loading .btn-lbl {
+            display: none
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg)
+            }
+        }
+
+        .log {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 12px 14px;
+            font-family: var(--mono);
+            font-size: 11px;
+            line-height: 1.8;
+            color: var(--txt3);
+            max-height: 140px;
+            overflow-y: auto;
+            display: none
+        }
+
+        .log.on {
+            display: block
+        }
+
+        .log .ok {
+            color: var(--accent)
+        }
+
+        .log .er {
+            color: var(--danger)
+        }
+
+        .log .in {
+            color: var(--info)
+        }
+
+        .content {
+            padding: 36px 40px;
+            display: flex;
+            flex-direction: column;
+            gap: 28px
+        }
+
+        .empty {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 400px;
+            gap: 16px;
+            opacity: .4;
+            text-align: center
+        }
+
+        .empty-ring {
+            width: 64px;
+            height: 64px;
+            border: 1.5px dashed var(--border2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--mono);
+            font-size: 20px;
+            color: var(--txt3)
+        }
+
+        .empty p {
+            font-family: var(--mono);
+            font-size: 12px;
+            color: var(--txt3)
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px
+        }
+
+        .stat {
+            background: var(--s1);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 16px 18px;
+            position: relative;
+            overflow: hidden
+        }
+
+        .stat::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--accent);
+            opacity: 0;
+            transition: opacity .3s
+        }
+
+        .stat.hi::before {
+            opacity: 1
+        }
+
+        .stat-lbl {
+            font-family: var(--mono);
+            font-size: 9px;
+            letter-spacing: .14em;
+            text-transform: uppercase;
+            color: var(--txt3);
+            margin-bottom: 8px
+        }
+
+        .stat-val {
+            font-size: 32px;
+            font-weight: 600;
+            letter-spacing: -.03em;
+            color: var(--txt);
+            line-height: 1
+        }
+
+        /* ── Filter bar ── */
+        .filter-bar {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-wrap: wrap;
+            padding: 14px 18px;
+            background: var(--s1);
+            border: 1px solid var(--border);
+            border-radius: 8px
+        }
+
+        .filter-label {
+            font-family: var(--mono);
+            font-size: 9px;
+            letter-spacing: .14em;
+            text-transform: uppercase;
+            color: var(--txt3);
+            margin-right: 4px;
+            flex-shrink: 0
+        }
+
+        .filter-btn {
+            font-family: var(--mono);
+            font-size: 11px;
+            letter-spacing: .04em;
+            padding: 6px 13px;
+            border-radius: 5px;
+            border: 1px solid var(--border2);
+            background: transparent;
+            color: var(--txt3);
+            cursor: pointer;
+            transition: all .15s;
+            display: flex;
+            align-items: center;
+            gap: 7px
+        }
+
+        .filter-btn:hover {
+            border-color: var(--txt2);
+            color: var(--txt2)
+        }
+
+        .filter-btn.active {
+            border-color: var(--accent);
+            color: var(--accent);
+            background: var(--acc-dim)
+        }
+
+        .f-count {
+            font-size: 9px;
+            padding: 1px 5px;
+            border-radius: 3px;
+            background: var(--s3);
+            color: var(--txt3);
+            transition: all .15s
+        }
+
+        .filter-btn.active .f-count {
+            background: rgba(0, 229, 160, .18);
+            color: var(--accent)
+        }
+
+        .results-hdr {
+            display: flex;
+            align-items: center;
+            justify-content: space-between
+        }
+
+        .results-hdr-title {
+            font-family: var(--mono);
+            font-size: 11px;
+            letter-spacing: .1em;
+            text-transform: uppercase;
+            color: var(--txt2)
+        }
+
+        .btn-csv {
+            font-family: var(--mono);
+            font-size: 11px;
+            letter-spacing: .06em;
+            padding: 7px 14px;
+            background: transparent;
+            border: 1px solid var(--border2);
+            border-radius: 5px;
+            color: var(--txt2);
+            cursor: pointer;
+            transition: border-color .15s, color .15s;
+            display: none
+        }
+
+        .btn-csv:hover {
+            border-color: var(--accent);
+            color: var(--accent)
+        }
+
+        .btn-csv.on {
+            display: inline-block
+        }
+
+        .eblock {
+            background: var(--s1);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            overflow: hidden;
+            animation: up .3s ease both
+        }
+
+        @keyframes up {
+            from {
+                opacity: 0;
+                transform: translateY(10px)
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0)
+            }
+        }
+
+        .eblock-hdr {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 22px;
+            background: var(--s2);
+            border-bottom: 1px solid var(--border)
+        }
+
+        .eblock-name {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-family: var(--mono);
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: .1em;
+            text-transform: uppercase;
+            color: var(--txt)
+        }
+
+        .eblock-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%
+        }
+
+        .eblock-stat {
+            font-family: var(--mono);
+            font-size: 11px;
+            color: var(--txt3)
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse
+        }
+
+        thead th {
+            font-family: var(--mono);
+            font-size: 9px;
+            letter-spacing: .14em;
+            text-transform: uppercase;
+            color: var(--txt3);
+            text-align: left;
+            padding: 10px 22px;
+            border-bottom: 1px solid var(--border);
+            background: var(--bg)
+        }
+
+        tbody tr {
+            border-bottom: 1px solid var(--border);
+            transition: background .12s
+        }
+
+        tbody tr:last-child {
+            border-bottom: none
+        }
+
+        tbody tr:hover {
+            background: var(--s2)
+        }
+
+        tbody td {
+            padding: 12px 22px;
+            font-size: 13px;
+            vertical-align: middle
+        }
+
+        .td-phrase {
+            font-family: var(--mono);
+            font-size: 12px;
+            color: var(--txt)
+        }
+
+        .chip {
+            display: inline-flex;
+            align-items: center;
+            font-family: var(--mono);
+            font-size: 12px;
+            font-weight: 700;
+            padding: 4px 11px;
+            border-radius: 4px
+        }
+
+        .chip-top3 {
+            background: rgba(0, 229, 160, .2);
+            color: var(--accent);
+            border: 1px solid rgba(0, 229, 160, .4)
+        }
+
+        .chip-top5 {
+            background: rgba(0, 229, 160, .10);
+            color: var(--accent);
+            border: 1px solid rgba(0, 229, 160, .2)
+        }
+
+        .chip-top10 {
+            background: rgba(255, 179, 0, .1);
+            color: var(--warn);
+            border: 1px solid rgba(255, 179, 0, .2)
+        }
+
+        .chip-low {
+            background: var(--s2);
+            color: var(--txt2);
+            border: 1px solid var(--border)
+        }
+
+        .chip-none {
+            background: rgba(255, 83, 112, .1);
+            color: var(--danger);
+            border: 1px solid rgba(255, 83, 112, .2)
+        }
+
+        .td-page {
+            font-family: var(--mono);
+            font-size: 11px;
+            color: var(--txt3)
+        }
+
+        tr.f-hide {
+            display: none
+        }
+
+        .filter-empty {
+            padding: 28px 22px;
+            font-family: var(--mono);
+            font-size: 11px;
+            color: var(--txt3);
+            text-align: center;
+            display: none
+        }
+
+        .error-banner {
+            background: rgba(255, 83, 112, .08);
+            border: 1px solid rgba(255, 83, 112, .25);
+            border-radius: 6px;
+            padding: 14px 18px;
+            font-family: var(--mono);
+            font-size: 12px;
+            color: var(--danger);
+            display: none
+        }
+
+        .error-banner.on {
+            display: block
+        }
+
+        @media(max-width:800px) {
+            .layout {
+                grid-template-columns: 1fr
+            }
+
+            .panel {
+                border-right: none;
+                border-bottom: 1px solid var(--border)
+            }
+
+            .stats {
+                grid-template-columns: repeat(2, 1fr)
+            }
+
+            .content {
+                padding: 24px 20px
+            }
+
+            header {
+                padding: 0 20px
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <div class="logo">
+            <div class="logo-dot"></div>RANK TRACKER
+        </div>
+        <div class="header-tag">SERP · v3.1</div>
+    </header>
+
+    <div class="layout">
+        <aside class="panel">
+            <div class="panel-head">
+                <div class="panel-title">SEO Rank Tracker</div>
+                <div class="panel-sub">// configure &amp; run</div>
+            </div>
+
+            <div class="field">
+                <div class="label">Target Domain</div>
+                <input type="text" id="domain" placeholder="example.com" />
+            </div>
+
+            <div class="field">
+                <div class="label">Search Phrases</div>
+                <textarea id="phrases" rows="6"
+                    placeholder="best coffee shop&#10;coffee near me&#10;artisan espresso"></textarea>
+                <div style="font-size:11px;color:var(--txt3);font-family:var(--mono)">one phrase per line</div>
+            </div>
+
+            <div class="field">
+                <div class="label">Search Engines</div>
+                <div class="engines">
+                    <div class="eng on" data-e="google" onclick="toggleEng(this)">
+                        <div class="eng-indicator">
+                            <div class="eng-check"></div>
+                        </div>
+                        <div class="eng-name">Google</div>
+                        <div class="eng-badge">google.com</div>
+                    </div>
+                    <div class="eng on" data-e="bing" onclick="toggleEng(this)">
+                        <div class="eng-indicator">
+                            <div class="eng-check"></div>
+                        </div>
+                        <div class="eng-name">Bing</div>
+                        <div class="eng-badge">bing.com</div>
+                    </div>
+                    <div class="eng on" data-e="duckduckgo" onclick="toggleEng(this)">
+                        <div class="eng-indicator">
+                            <div class="eng-check"></div>
+                        </div>
+                        <div class="eng-name">DuckDuckGo</div>
+                        <div class="eng-badge">ddg.gg</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="field">
+                <div class="label">Max Pages</div>
+                <input type="number" id="pages" value="5" min="1" max="10" />
+            </div>
+
+            <div style="display:flex;flex-direction:column;gap:10px">
+                <button class="btn-run" id="btn-run" onclick="runTracker()">
+                    <div class="spinner"></div>
+                    <span class="btn-lbl">▶ &nbsp;RUN TRACKER</span>
+                </button>
+                <div class="log" id="log"></div>
+            </div>
+        </aside>
+
+        <main class="content" id="content">
+            <div class="empty">
+                <div class="empty-ring">◎</div>
+                <p>Configure inputs and run the tracker.</p>
+                <p>Results will appear here.</p>
+            </div>
+            <div class="error-banner" id="err-banner"></div>
+        </main>
+    </div>
+
+    <script>
+        function toggleEng(el) { el.classList.toggle('on') }
+
+        const logEl = document.getElementById('log')
+        function log(msg, cls = '') { logEl.classList.add('on'); const d = document.createElement('div'); if (cls) d.className = cls; d.textContent = '› ' + msg; logEl.appendChild(d); logEl.scrollTop = logEl.scrollHeight }
+        function clearLog() { logEl.innerHTML = ''; logEl.classList.remove('on') }
+        function showError(msg) { const b = document.getElementById('err-banner'); b.textContent = '⚠ ' + msg; b.classList.add('on') }
+        function hideError() { const b = document.getElementById('err-banner'); if (b) b.classList.remove('on') }
+
+        let lastData = null, activeFilter = 'top10'
+
+        async function runTracker() {
+            const domain = document.getElementById('domain').value.trim()
+            const phrases = document.getElementById('phrases').value.split('\n').map(p => p.trim()).filter(Boolean)
+            const engines = [...document.querySelectorAll('.eng.on')].map(e => e.dataset.e)
+            const pages = parseInt(document.getElementById('pages').value)
+
+            if (!domain || !phrases.length || !engines.length) { showError('Please fill in all fields and select at least one engine.'); return }
+
+            hideError(); clearLog()
+            const btn = document.getElementById('btn-run')
+            btn.disabled = true; btn.classList.add('loading')
+            log(`Domain: ${domain}`, 'in')
+            log(`Phrases: ${phrases.length} · Engines: ${engines.join(', ')} · Pages: ${pages}`, 'in')
+
+            document.getElementById('content').innerHTML =
+                `<div class="empty"><div class="empty-ring" style="animation:spin 1s linear infinite">◎</div><p>Running…</p></div><div class="error-banner" id="err-banner"></div>`
+
+            try {
+                const res = await fetch('http://127.0.0.1:8000/run', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ domain, phrases, engines, max_pages: pages }) })
+                if (!res.ok) throw new Error(`HTTP ${res.status}`)
+                const data = await res.json()
+                lastData = { data, domain, phrases, ts: Date.now() }
+                activeFilter = 'top10'
+                log('Done.', 'ok')
+                renderResults(data, phrases)
+            } catch (err) {
+                console.error(err)
+                log('Server error — is FastAPI running on port 8000?', 'er')
+                showError('Could not connect to backend. Make sure FastAPI is running on http://127.0.0.1:8000')
+                document.getElementById('content').innerHTML = '<div class="error-banner on" id="err-banner">⚠ Could not connect to backend.</div>'
+            }
+            btn.disabled = false; btn.classList.remove('loading')
+        }
+
+        function chip(rank) {
+            if (rank === 'not found' || rank === undefined || rank === null) return `<span class="chip chip-none">not found</span>`
+            const n = parseInt(rank)
+            const cls = n <= 3 ? 'chip-top3' : n <= 5 ? 'chip-top5' : n <= 10 ? 'chip-top10' : 'chip-low'
+            return `<span class="chip ${cls}">#${rank}</span>`
+        }
+        function pageOf(rank) {
+            if (rank === 'not found' || isNaN(parseInt(rank))) return '—'
+            return 'pg ' + Math.ceil(parseInt(rank) / 10)
+        }
+
+        // Which bucket does a rank belong to?
+        function bucket(rank) {
+            if (rank === 'not found' || rank === undefined || rank === null) return 'nf'
+            const n = parseInt(rank)
+            if (n <= 3) return 'top3'
+            if (n <= 5) return 'top5'
+            if (n <= 10) return 'top10'
+            return 'over10'
+        }
+
+        // Is a rank visible under the given filter?
+        function isVisible(rank, filter) {
+            if (filter === 'all') return true
+            const b = bucket(rank)
+            if (filter === 'top3') return b === 'top3'
+            if (filter === 'top5') return b === 'top3' || b === 'top5'
+            if (filter === 'top10') return b === 'top3' || b === 'top5' || b === 'top10'
+            if (filter === 'over10') return b === 'over10'
+            return true
+        }
+
+        function countFilter(ranks, filter) { return ranks.filter(r => isVisible(r, filter)).length }
+
+        function applyFilter(filter) {
+            activeFilter = filter
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.toggle('active', b.dataset.filter === filter))
+            document.querySelectorAll('tbody tr[data-rank]').forEach(tr => {
+                tr.classList.toggle('f-hide', !isVisible(tr.dataset.rank, filter))
+            })
+            document.querySelectorAll('.eblock').forEach(block => {
+                const visible = [...block.querySelectorAll('tbody tr[data-rank]')].filter(r => !r.classList.contains('f-hide'))
+                const msg = block.querySelector('.filter-empty')
+                if (msg) msg.style.display = visible.length === 0 ? 'block' : 'none'
+            })
+        }
+
+        const DOT = { google: '#4285f4', bing: '#00897b', duckduckgo: '#ff5722' }
+
+        function renderResults(data, phrases) {
+            const allRanks = Object.values(data).flatMap(arr => arr.map(item => Object.values(item)[0]))
+            const found = allRanks.filter(r => r !== 'not found').length
+            const top10cnt = allRanks.filter(r => !isNaN(parseInt(r)) && parseInt(r) <= 10).length
+            const nf = allRanks.length - found
+
+            const content = document.getElementById('content')
+            content.innerHTML = ''
+
+            const eb = document.createElement('div'); eb.id = 'err-banner'; eb.className = 'error-banner'
+            content.appendChild(eb)
+
+            // Stats
+            const stats = document.createElement('div'); stats.className = 'stats'
+                ;[{ l: 'Total Checks', v: allRanks.length, hi: false }, { l: 'Found', v: found, hi: true }, { l: 'Top 10', v: top10cnt, hi: top10cnt > 0 }, { l: 'Not Found', v: nf, hi: false }]
+                    .forEach(s => { const c = document.createElement('div'); c.className = 'stat' + (s.hi ? ' hi' : ''); c.innerHTML = `<div class="stat-lbl">${s.l}</div><div class="stat-val">${s.v}</div>`; stats.appendChild(c) })
+            content.appendChild(stats)
+
+            // Filter bar
+            const filterDefs = [
+                { key: 'all', label: 'All', count: allRanks.length },
+                { key: 'top3', label: 'Top 3', count: countFilter(allRanks, 'top3') },
+                { key: 'top5', label: 'Top 5', count: countFilter(allRanks, 'top5') },
+                { key: 'top10', label: 'Top 10', count: countFilter(allRanks, 'top10') },
+                { key: 'over10', label: '> 10', count: countFilter(allRanks, 'over10') },
+            ]
+            const bar = document.createElement('div'); bar.className = 'filter-bar'
+            bar.innerHTML = '<span class="filter-label">Filter by rank</span>'
+            filterDefs.forEach(f => {
+                const btn = document.createElement('button')
+                btn.className = 'filter-btn' + (f.key === activeFilter ? ' active' : '')
+                btn.dataset.filter = f.key
+                btn.innerHTML = `${f.label}<span class="f-count">${f.count}</span>`
+                btn.onclick = () => applyFilter(f.key)
+                bar.appendChild(btn)
+            })
+            content.appendChild(bar)
+
+            // Results header
+            const hdr = document.createElement('div'); hdr.className = 'results-hdr'
+            hdr.innerHTML = `<div class="results-hdr-title">Results</div><button class="btn-csv on" onclick="exportCSV()">↓ Export CSV</button>`
+            content.appendChild(hdr)
+
+            // Engine blocks
+            for (const engine in data) {
+                const rows = data[engine]
+                const foundHere = rows.filter(r => Object.values(r)[0] !== 'not found').length
+                const block = document.createElement('div')
+                block.className = 'eblock'
+                block.style.animationDelay = (Object.keys(data).indexOf(engine) * .08) + 's'
+                const dotColor = DOT[engine.toLowerCase()] || '#888'
+                const label = engine.charAt(0).toUpperCase() + engine.slice(1)
+
+                let trs = ''
+                rows.forEach(item => {
+                    const phrase = Object.keys(item)[0], rank = item[phrase]
+                    const hidden = !isVisible(rank, activeFilter) ? ' f-hide' : ''
+                    trs += `<tr data-rank="${rank}" class="${hidden}"><td class="td-phrase">${phrase}</td><td>${chip(rank)}</td><td class="td-page">${pageOf(rank)}</td></tr>`
+                })
+
+                block.innerHTML = `
+      <div class="eblock-hdr">
+        <div class="eblock-name"><div class="eblock-dot" style="background:${dotColor};box-shadow:0 0 6px ${dotColor}44"></div>${label}</div>
+        <div class="eblock-stat">${foundHere}/${rows.length} found</div>
+      </div>
+      <table><thead><tr><th>Search Phrase</th><th>Rank</th><th>Page</th></tr></thead><tbody>${trs}</tbody></table>
+      <div class="filter-empty">No keywords match this filter for ${label}.</div>`
+                content.appendChild(block)
+
+                const visible = [...block.querySelectorAll('tbody tr[data-rank]')].filter(r => !r.classList.contains('f-hide'))
+                const msg = block.querySelector('.filter-empty')
+                if (msg) msg.style.display = visible.length === 0 ? 'block' : 'none'
+            }
+        }
+
+        function exportCSV() {
+            if (!lastData) return
+            const { data, ts } = lastData; let csv = ''
+            for (const engine in data) {
+                csv += engine + '\n'
+                data[engine].forEach(item => { const phrase = Object.keys(item)[0]; const rank = item[phrase]; csv += `${phrase},${rank}\n` })
+            }
+            const blob = new Blob([csv], { type: 'text/csv' }); const a = document.createElement('a')
+            a.href = URL.createObjectURL(blob); a.download = `${Math.floor(ts / 1000)}.csv`; a.click()
+        }
+    </script>
+</body>
+
+</html>
