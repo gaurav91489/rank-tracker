@@ -22,38 +22,22 @@ class RequestData(BaseModel):
     max_pages: int
 
 
-from selenium.webdriver.chrome.options import Options
+import undetected_chromedriver as uc
 import platform
 
 @app.post("/run")
 def run(data: RequestData):
 
-    chrome_options = Options()
+    options = uc.ChromeOptions()
     
     # Only run in headless mode if not on Windows (i.e., inside Docker / Railway)
-    if platform.system() == "Linux":
-        chrome_options.add_argument("--headless=new")
-        chrome_options.add_argument("--no-sandbox")
-        chrome_options.add_argument("--disable-dev-shm-usage")
-        chrome_options.add_argument("--window-size=1920,1080")
-        chrome_options.add_argument("--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36")
+    is_linux = platform.system() == "Linux"
+    if is_linux:
+        options.add_argument("--no-sandbox")
+        options.add_argument("--disable-dev-shm-usage")
+        options.add_argument("--window-size=1920,1080")
 
-    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=chrome_options)
-
-    # Use stealth exactly as Chrome would be on desktop to avoid bot detection
-    try:
-        from selenium_stealth import stealth
-        stealth(
-            driver,
-            languages=["en-US", "en"],
-            vendor="Google Inc.",
-            platform="Win32",
-            webgl_vendor="Intel Inc.",
-            renderer="Intel Iris OpenGL Engine",
-            fix_hairline=True,
-        )
-    except ImportError:
-        pass
+    driver = uc.Chrome(options=options, headless=is_linux)
 
     try:
         results = run_tracker(
